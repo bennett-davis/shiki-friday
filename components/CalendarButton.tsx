@@ -19,26 +19,45 @@ export default function CalendarButton() {
   };
 
   const formatDateForCalendar = (date: Date) => {
-    // Format: YYYYMMDDTHHMMSS
-    return date.toISOString().replace(/-|:|\.\d+/g, "");
+    // Convert to proper iCalendar format with time zone designator
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
+    // Format as YYYYMMDDTHHMMSS
+    return `${year}${month}${day}T${hours}${minutes}${seconds}`;
   };
 
   const createCalendarUrl = () => {
     const startDate = getNextFriday();
     const endDate = new Date(startDate);
-    endDate.setHours(startDate.getHours() + 1); // 2 hour event
+    endDate.setHours(startDate.getHours() + 1); // 1 hour event
 
     const startDateFormatted = formatDateForCalendar(startDate);
     const endDateFormatted = formatDateForCalendar(endDate);
+
+    // Determine if currently in Daylight Saving Time
+    const isDST = () => {
+      const jan = new Date(startDate.getFullYear(), 0, 1).getTimezoneOffset();
+      const jul = new Date(startDate.getFullYear(), 6, 1).getTimezoneOffset();
+      return Math.max(jan, jul) !== startDate.getTimezoneOffset();
+    };
+
+    // Central Time timezone ID
+    const tzid = isDST() ? "America/Chicago" : "America/Chicago";
 
     const event = [
       "BEGIN:VCALENDAR",
       "VERSION:2.0",
       "BEGIN:VEVENT",
-      `DTSTART:${startDateFormatted}`,
-      `DTEND:${endDateFormatted}`,
+      `DTSTART;TZID=${tzid}:${startDateFormatted}`,
+      `DTEND;TZID=${tzid}:${endDateFormatted}`,
       "SUMMARY:Shiki Friday",
       "DESCRIPTION:Join us for Shiki Friday!",
+      "LOCATION:Central Time",
       "END:VEVENT",
       "END:VCALENDAR",
     ].join("\n");
