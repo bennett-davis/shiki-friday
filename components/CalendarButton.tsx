@@ -9,7 +9,21 @@ export default function CalendarButton() {
   const getNextFriday = () => {
     const now = new Date();
     const dayOfWeek = now.getDay(); // 0 is Sunday, 5 is Friday
-    const daysUntilFriday = dayOfWeek <= 5 ? 5 - dayOfWeek : 7 + 5 - dayOfWeek;
+
+    let daysUntilFriday;
+
+    if (dayOfWeek === 5) {
+      // If today is Friday, check if it's past noon
+      if (now.getHours() >= 12) {
+        daysUntilFriday = 7; // Next Friday
+      } else {
+        daysUntilFriday = 0; // Today
+      }
+    } else if (dayOfWeek < 5) {
+      daysUntilFriday = 5 - dayOfWeek; // Days until this Friday
+    } else {
+      daysUntilFriday = 7 - dayOfWeek + 5; // Days until next Friday
+    }
 
     const nextFriday = new Date(now);
     nextFriday.setDate(now.getDate() + daysUntilFriday);
