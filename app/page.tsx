@@ -1,5 +1,5 @@
 import Image from "next/image";
-import CalendarButton from "../components/CalendarButton";
+// import CalendarButton from "../components/CalendarButton";
 
 export default function Home() {
   return (
@@ -17,10 +17,10 @@ export default function Home() {
           height={300}
           priority
         />
-        <p>Friday at noon o clock.</p>
-        <div className="animate-bounce mt-12">
+        <p>Every Friday at noon o clock.</p>
+        {/* <div className="animate-bounce mt-12">
           <CalendarButton />
-        </div>
+        </div> */}
       </main>
     </div>
   );
